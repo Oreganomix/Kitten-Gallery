@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rotating Kitten Gallery</title>
+  <style> 
+    :root {
+      --w: 720px;
+      --btn-size: 44px;
+      --fade-ms: 500ms;
+    }
+    body {
+      font-family: Calibri;
+      background: #edf3ec;
+      color: #111;
+      display: grid;
+      place-items: center;
+      min-height: 100svh;
+      margin: 0;
+      padding: 24px;
+    }
+    .wrap { width: min(var(--w), 95vw); }
+    h1 {
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0 0 12px;
+  color: black;
+  letter-spacing: 1px;
+  text-align: center;
+  background-color: #e58a8a;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-shadow: 1px 1px 0px #fff, 2px 2px 0px #ffb3b3;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+    #gallery {
+      width: 100%; aspect-ratio: 1/1;
+      position: relative; overflow: hidden; border-radius: 16px;
+      border: 4px solid #e58a8a; box-shadow: 0 10px 30px rgba(0,0,0,.5); background: #e58a8a;
+    }
+    #gallery-image {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      opacity: 1; transition: opacity var(--fade-ms) ease-in-out;
+    }
+    .gallery-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: var(--btn-size); height: var(--btn-size); border: none; border-radius: 50%;
+      background: #e58a8a; color: black; font-size: 22px;
+      display: grid; place-items: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); transition: background 0.2s ease;
+    }
+	  .gallery-btn:hover {
+  background: #ff9c9c;
+}
+    .prev { left: 8px; } .next { right: 8px; }
+    .caption { position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 8px 12px; font-size: 20px; background: linear-gradient(180deg, rgba(229, 138, 138, 0.4) 0%, rgba(229, 138, 138, 0.85) 100%); color: black; font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🌟⭐Kitten Gallery⭐🌟</h1>
+    <div id="gallery">
+      <img id="gallery-image" src="" alt="Kitten image">
+      <div class="caption" id="gallery-caption"></div>
+      <button class="gallery-btn prev" id="btn-prev">&#9664;</button>
+      <button class="gallery-btn next" id="btn-next">&#9654;</button>
+    </div>
+  </div>
+
+  <script>
+    const images = [
+      {src: "KittenImages/kitten1.jpg", caption: "Oui Oui Kitten"},
+      {src: "KittenImages/kitten2.jpg", caption: "Wizard Kitten"},
+      {src: "KittenImages/kitten3.jpg", caption: "Birthday Kitten"},
+      {src: "KittenImages/kitten4.jpg", caption: "Vacation Kitten"},
+      {src: "KittenImages/kitten5.jpg", caption: "Rich Flex Kitten"},
+      {src: "KittenImages/kitten6.jpg", caption: "Drummer Kitten"},
+      {src: "KittenImages/kitten7.jpg", caption: "Couch Potato Kitten"},
+      {src: "KittenImages/kitten8.jpg", caption: "Coolio Kitten"},
+      {src: "KittenImages/kitten9.jpg", caption: "Sassy Kitten"},
+      {src: "KittenImages/kitten10.jpg", caption: "Big Chillin Kitten"}
+    ];
+
+    const DISPLAY_MS = 7000, FADE_MS = 500;
+    const imgEl = document.getElementById("gallery-image");
+    const captionEl = document.getElementById("gallery-caption");
+    const prevBtn = document.getElementById("btn-prev"), nextBtn = document.getElementById("btn-next");
+    let index = 0, timerId;
+
+    images.forEach(({src}) => { const i = new Image(); i.src = src; });
+
+    function show(i) {
+      const item = images[i % images.length];
+      imgEl.style.opacity = 0;
+      setTimeout(() => {
+        imgEl.src = item.src; captionEl.textContent = item.caption; imgEl.style.opacity = 1;
+      }, FADE_MS);
+    }
+
+    function next() { index = (index + 1) % images.length; show(index); restart(); }
+    function prev() { index = (index - 1 + images.length) % images.length; show(index); restart(); }
+    function restart() { clearInterval(timerId); timerId = setInterval(next, DISPLAY_MS); }
+
+    imgEl.style.opacity = 0; show(index); restart();
+    nextBtn.addEventListener("click", next); prevBtn.addEventListener("click", prev);
+  </script>
+</body>
+</html>
